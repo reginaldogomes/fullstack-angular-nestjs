@@ -1,0 +1,20 @@
+# Node.js
+node_modules/
+dist/
+npm-debug.log
+
+# Prisma
+.prisma/
+.env
+
+# Docker
+**/node_modules/
+**/dist/
+**/.env
+
+# IDE
+.vscode/
+.idea/
+
+# Outros
+.DS_Store

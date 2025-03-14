@@ -1,0 +1,49 @@
+
+---
+
+## Passo 6: Configurar o Docker Compose no Monorepo
+
+No diretório raiz, crie um arquivo `docker-compose.yml` para orquestrar os containers do backend, frontend e banco de dados:
+
+```yaml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: customer_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: nestjs_backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/customer_db?schema=public
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+
+  frontend:
+    build: ./frontend
+    container_name: angular_frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
